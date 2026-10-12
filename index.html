@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <link rel="preload" as="image" href="img/prueba3.avif" fetchpriority="high">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="contenedor">
+
+  <div id="inicioSesion">
+    
+    <h1> Control de Asistencia </h1>
+
+    <img src="img/perfil.png" alt="Perfil" class="icono-perfil">
+
+    <p>Ingresa tu ID de empleado</p>
+
+    <div class="login-form">
+
+    <input type="text" id="idEmpleado" placeholder=" ID ">
+
+    <button id="iniciarSesion">Iniciar sesión</button>
+
+  </div>
+
+</div>
+
+
+
+<div id="sistemaAsistencia" style="display: none;">
+
+    <div class="panel-asistencia">
+
+        <header class="encabezado-panel">
+            <div>
+                <h2>Control de Asistencia</h2>
+            </div>
+        </header>
+
+            <div class="indicador-panel">
+                <span class="punto-activo"></span>
+                Jornada laboral
+            </div>
+        </header>
+
+        <div class="contenido-panel">
+
+            <section class="tarjeta-empleado">
+
+                <div class="avatar-panel">
+                    <img src="img/perfil.png" alt="Perfil del empleado">
+                </div>
+
+                <div class="informacion-empleado">
+                    
+                    <p class="etiqueta-panel">TU PERFIL</p>
+
+                    <p class="bienvenida">Nombre del empleado</p>
+
+                    <p class="fecha">Fecha: --/--/----</p>
+                </div>
+
+            </section>
+
+            <section class="tarjeta-acciones">
+
+                <div class="titulo-tarjeta">
+                    <div>
+                        <h2>Registrar asistencia</h2>
+                        <p>Selecciona la acción que deseas realizar</p>
+                    </div>
+                </div>
+
+                <div class="botones-asistencia">
+
+                    <button id="entrada">
+                        🟢 Registrar Entrada
+                    </button>
+
+                    <button id="comida">
+                        🍽️ Iniciar comida
+                    </button>
+
+                    <button id="salida">
+                        🔴 Registrar Salida
+                    </button>
+
+                    <button id="extra">
+                        ⏰ Iniciar hora extra
+                    </button>
+
+                </div>
+
+            </section>
+
+            <section id="misRegistros" class="tarjeta-registros">
+
+                <div class="encabezado-registros">
+                    <div>
+                        <h2>Mis registros</h2>
+                        <p>Actividad registrada durante tu jornada</p>
+                    </div>
+
+                    <span class="icono-registros">▤</span>
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div id="confirmacion" style="display: none;">
+
+    <div class="ventana-confirmacion">
+
+        <h2>Confirmar acción</h2>
+
+        <p id="textoConfirmacion">
+            ¿Quieres confirmar tu entrada?
+        </p>
+
+        <button id="confirmar">Sí, confirmar</button>
+
+        <button id="cancelar">No, cancelar</button>
+
+    </div>
+
+</div>
+
+<div id="mensaje"></div>
+</div>
+
+<script src="js/script.js"></script>
+<script src="js/offline.js"></script>
+</body>
+</html>
+
