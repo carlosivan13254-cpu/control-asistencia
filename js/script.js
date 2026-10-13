@@ -726,6 +726,8 @@ document.querySelector("#iniciarSesion").addEventListener("click", function(){
 
         document.querySelector(".bienvenida").textContent = empleadoGuardado.nombre;
 
+        history.pushState({ pantalla: "asistencia" }, "", location.href);
+
 
         return;
 
