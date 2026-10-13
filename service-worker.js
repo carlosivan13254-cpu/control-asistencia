@@ -52,7 +52,7 @@ function abrirBaseDatos() {
 
 }
 
-function eliminarRegistroPendiente(id, token) {
+function eliminarRegistroPendiente(id) {
 
     return abrirBaseDatos().then(db => {
 
@@ -60,102 +60,8 @@ function eliminarRegistroPendiente(id, token) {
 
             const transaccion = db.transaction(STORE_NAME, "readwrite");
             const almacen = transaccion.objectStore(STORE_NAME);
-            let eliminado = false;
 
-            const solicitud = almacen.get(id);
-
-            solicitud.onsuccess = function(){
-                const registro = solicitud.result;
-
-                if(registro && registro.reclamoSincronizacion &&
-                    registro.reclamoSincronizacion.token === token){
-                    almacen.delete(id);
-                    eliminado = true;
-                }
-            };
-
-            transaccion.oncomplete = function(){
-                resolve(eliminado);
-            };
-
-            transaccion.onerror = function(){
-                reject(transaccion.error);
-            };
-
-        });
-
-    });
-
-}
-
-function reclamarRegistroPendiente(id) {
-
-    return abrirBaseDatos().then(db => {
-
-        return new Promise((resolve, reject) => {
-
-            const transaccion = db.transaction(STORE_NAME, "readwrite");
-            const almacen = transaccion.objectStore(STORE_NAME);
-            let token = null;
-
-            const solicitud = almacen.get(id);
-
-            solicitud.onsuccess = function(){
-                const registro = solicitud.result;
-
-                if(!registro){
-                    return;
-                }
-
-                const ahora = Date.now();
-                const reclamoActual = registro.reclamoSincronizacion;
-
-                if(reclamoActual && reclamoActual.expira > ahora){
-                    token = false;
-                    return;
-                }
-
-                token = ahora + "-" + Math.random();
-                registro.reclamoSincronizacion = {
-                    token: token,
-                    expira: ahora + 300000
-                };
-                almacen.put(registro);
-            };
-
-            transaccion.oncomplete = function(){
-                resolve(token);
-            };
-
-            transaccion.onerror = function(){
-                reject(transaccion.error);
-            };
-
-        });
-
-    });
-
-}
-
-function liberarRegistroPendiente(id, token) {
-
-    return abrirBaseDatos().then(db => {
-
-        return new Promise((resolve, reject) => {
-
-            const transaccion = db.transaction(STORE_NAME, "readwrite");
-            const almacen = transaccion.objectStore(STORE_NAME);
-            const solicitud = almacen.get(id);
-
-            solicitud.onsuccess = function(){
-                const registro = solicitud.result;
-
-                if(registro && registro.reclamoSincronizacion &&
-                    registro.reclamoSincronizacion.token === token){
-                    delete registro.reclamoSincronizacion;
-                    almacen.put(registro);
-                }
-            };
+            almacen.delete(id);
 
             transaccion.oncomplete = function(){
                 resolve();
@@ -173,52 +79,29 @@ function liberarRegistroPendiente(id, token) {
 
 async function enviarRegistroPendiente(registro) {
 
-    const token = await reclamarRegistroPendiente(registro.id);
-
-    if(token === null){
-        return true;
-    }
-
-    if(token === false){
-        throw new Error("Registro reclamado por otro contexto; se reintentará.");
-    }
+    const payload = Object.assign({}, registro.datos || {}, {
+        idRegistro: registro.id,
+        fechaGuardado: registro.fechaGuardado
+    });
 
     try{
 
         const respuesta = await fetch(ENDPOINT, {
             method: "POST",
-            body: JSON.stringify(registro.datos)
+            body: JSON.stringify(payload)
         });
 
         const textoRespuesta = await respuesta.text();
 
-        console.info("Service Worker: respuesta de sincronización:", {
-            id: registro.id,
-            status: respuesta.status,
-            respuesta: textoRespuesta
-        });
-
         if(!respuesta.ok || !RESPUESTAS_OK.has(textoRespuesta.trim())){
-            console.error("Service Worker: respuesta no confirmada; registro conservado:", registro.id);
-            await liberarRegistroPendiente(registro.id, token);
             return false;
         }
 
-        const eliminado = await eliminarRegistroPendiente(registro.id, token);
-
-        if(!eliminado){
-            console.error("Service Worker: confirmación recibida pero el registro cambió de propietario:", registro.id);
-        }
-
-        return eliminado;
+        await eliminarRegistroPendiente(registro.id);
+        return true;
 
     }catch(error){
-        console.error("Service Worker: fallo al sincronizar; registro conservado:", {
-            id: registro.id,
-            name: error.name,
-            message: error.message
-        });
-        await liberarRegistroPendiente(registro.id, token);
+        console.error("Service Worker: no se pudo sincronizar:", error);
         return false;
     }
 
@@ -226,43 +109,30 @@ async function enviarRegistroPendiente(registro) {
 
 async function sincronizarRegistrosPendientesServiceWorker() {
 
-    console.info("Service Worker: comenzó evento sync asistencia-sync.");
+    const db = await abrirBaseDatos();
+    const transaccion = db.transaction(STORE_NAME, "readonly");
+    const almacen = transaccion.objectStore(STORE_NAME);
 
-    try{
+    const registros = await new Promise((resolve, reject) => {
 
-        const db = await abrirBaseDatos();
-        const transaccion = db.transaction(STORE_NAME, "readonly");
-        const almacen = transaccion.objectStore(STORE_NAME);
+        const solicitud = almacen.getAll();
 
-        const registros = await new Promise((resolve, reject) => {
+        solicitud.onsuccess = function(){
+            resolve(solicitud.result || []);
+        };
 
-            const solicitud = almacen.getAll();
+        solicitud.onerror = function(){
+            reject(solicitud.error);
+        };
 
-            solicitud.onsuccess = function(){
-                resolve(solicitud.result || []);
-            };
+    });
 
-            solicitud.onerror = function(){
-                reject(solicitud.error);
-            };
+    for(const registro of registros){
+        const enviado = await enviarRegistroPendiente(registro);
 
-        });
-
-        console.info("Service Worker: registros pendientes encontrados:", registros.length);
-
-        for(const registro of registros){
-            const enviado = await enviarRegistroPendiente(registro);
-
-            if(!enviado){
-                throw new Error("No se recibió confirmación válida para " + registro.id);
-            }
+        if(!enviado){
+            return;
         }
-
-        console.info("Service Worker: sincronización completada.");
-
-    }catch(error){
-        console.error("Service Worker: sincronización incompleta; Background Sync debe reintentar:", error);
-        throw error;
     }
 
 }
