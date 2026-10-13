@@ -1,4 +1,4 @@
-const CACHE_NAME = "asistencia-v6";
+const CACHE_NAME = "asistencia-v7";
 const DB_NAME = "asistenciaOffline";
 const DB_VERSION = 1;
 const STORE_NAME = "registrosPendientes";
@@ -23,6 +23,31 @@ const ARCHIVOS = [
     "./img/prueba3.avif",
     "./img/perfil.png"
 ];
+
+function precargarArchivos(cache, intento = 1) {
+
+    return cache.addAll(
+        ARCHIVOS.map(archivo => new Request(archivo, { cache: "reload" }))
+    ).catch(error => {
+
+        if(intento >= 3){
+            console.error("No se pudo precargar la aplicación para uso offline:", error);
+            throw error;
+        }
+
+        console.warn(
+            "Falló la precarga offline; se reintentará:",
+            intento,
+            error
+        );
+
+        return new Promise(resolve => {
+            setTimeout(resolve, 500 * intento);
+        }).then(() => precargarArchivos(cache, intento + 1));
+
+    });
+
+}
 
 function abrirBaseDatos() {
 
@@ -141,9 +166,7 @@ self.addEventListener("install", event => {
 
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(
-                ARCHIVOS.map(archivo => new Request(archivo, { cache: "reload" }))
-            ))
+            .then(cache => precargarArchivos(cache))
             .then(() => self.skipWaiting())
     );
 
