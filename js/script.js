@@ -728,7 +728,6 @@ document.querySelector("#iniciarSesion").addEventListener("click", function(){
 
         history.pushState({ pantalla: "asistencia" }, "", location.href);
 
-
         return;
 
     }else{
