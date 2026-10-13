@@ -728,7 +728,6 @@ document.querySelector("#iniciarSesion").addEventListener("click", function(){
 
         document.querySelector(".bienvenida").textContent = empleadoGuardado.nombre;
 
-
         return;
 
     }else{
@@ -813,6 +812,7 @@ if(data.enHoraExtra === true){
             document.querySelector("#sistemaAsistencia").style.display = "block";
 
             document.querySelector(".bienvenida").textContent = data.nombre;
+
 
                 const misRegistros = document.querySelector("#misRegistros");
 
