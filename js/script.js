@@ -956,6 +956,7 @@ function volverAlLogin() {
     document.querySelector("#confirmacion").style.display = "none";
 }
 
+
 // Detectar cuando el usuario pulsa la flecha de atrás
 
 window.addEventListener("popstate", function () {
@@ -963,9 +964,6 @@ window.addEventListener("popstate", function () {
 
     if (sistema && sistema.style.display !== "none") {
         volverAlLogin();
-
-        // Mantener una entrada de historial para la navegación interna
-        history.pushState({ pantalla: "login" }, "", location.href);
     }
 });
 
