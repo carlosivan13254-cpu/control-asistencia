@@ -959,13 +959,24 @@ function volverAlLogin() {
 
 // Detectar cuando el usuario pulsa la flecha de atrás
 
+
 window.addEventListener("popstate", function () {
     const sistema = document.querySelector("#sistemaAsistencia");
 
-    if (sistema && sistema.style.display !== "none") {
+    alert(
+        "Se detectó atrás.\n" +
+        "URL: " + location.href + "\n" +
+        "Historial: " + history.length + "\n" +
+        "Estado: " + JSON.stringify(history.state) + "\n" +
+        "Asistencia visible: " +
+        (sistema && getComputedStyle(sistema).display !== "none")
+    );
+
+    if (sistema && getComputedStyle(sistema).display !== "none") {
         volverAlLogin();
     }
 });
+
 
 
 
