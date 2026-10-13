@@ -811,6 +811,8 @@ if(data.enHoraExtra === true){
 
             document.querySelector(".bienvenida").textContent = data.nombre;
 
+            history.pushState({ pantalla: "asistencia" }, "", location.href);
+
                 const misRegistros = document.querySelector("#misRegistros");
 
 misRegistros.innerHTML = `
