@@ -909,6 +909,7 @@ body.sistema-activo {
      min-height: 100dvh;
      align-items: center;
      box-sizing: border-box;
+     padding-top: env(safe-area-inset-top, 0px);
      padding-bottom: 20px;
     }
 
@@ -969,7 +970,7 @@ body.sistema-activo {
         width: 100%;
         min-height: 100vh;
         min-height: 100dvh;
-        padding: 24px 16px;
+        padding: calc(24px + env(safe-area-inset-top, 0px)) 16px;
         box-sizing: border-box;
         background: transparent;
     }
@@ -1431,5 +1432,3 @@ body.sistema-activo {
 }
 
 }
-
-
