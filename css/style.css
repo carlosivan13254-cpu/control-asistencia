@@ -1433,22 +1433,3 @@ body.sistema-activo {
 }
 
 
-/* Fondo de la página y soporte para áreas seguras */
-html {
-    min-height: 100%;
-    background-color: #111827;
-}
-
-body {
-    min-height: 100vh;
-    min-height: 100dvh;
-    margin: 0;
-    background-color: #111827;
-}
-
-/* Permite que los contenedores principales respeten la pantalla */
-#inicioSesion,
-#sistemaAsistencia {
-    box-sizing: border-box;
-}
-
