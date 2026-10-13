@@ -939,42 +939,27 @@ if(data.registros && data.registros.finExtra !== ""){
 });
 
 
-function volverAlLogin() {
-    // Ocultar la pantalla de asistencia
-    document.querySelector("#sistemaAsistencia").style.display = "none";
 
-    // Mostrar la pantalla de login
+function volverAlLogin() {
+    document.querySelector("#sistemaAsistencia").style.display = "none";
     document.querySelector("#inicioSesion").style.display = "block";
 
-    // Restablecer las clases visuales
     document.body.classList.remove("sistema-activo");
     document.body.classList.add("login-activo");
 
-    // Cerrar la sesión del empleado
     sessionStorage.removeItem("idEmpleado");
-
-    // Limpiar el campo del ID
     document.querySelector("#idEmpleado").value = "";
-
-    // Cerrar cualquier ventana de confirmación abierta
     document.querySelector("#confirmacion").style.display = "none";
 }
 
-// Crear una entrada en el historial al iniciar la aplicación
-history.pushState({ pantalla: "login" }, "", location.href);
-
-// Controlar la flecha de atrás del navegador o celular
+// Detectar cuando el usuario pulsa la flecha de atrás
 window.addEventListener("popstate", function () {
     const sistema = document.querySelector("#sistemaAsistencia");
-    const login = document.querySelector("#inicioSesion");
 
-    if (sistema.style.display !== "none" && sistema.style.display !== "") {
+    if (sistema.style.display !== "none") {
         volverAlLogin();
     }
-
-    // Mantener una entrada en el historial para permitir
-    // volver a pulsar atrás desde la pantalla de asistencia
-    history.pushState({ pantalla: "login" }, "", location.href);
 });
+
 
 
