@@ -722,6 +722,8 @@ document.querySelector("#iniciarSesion").addEventListener("click", function(){
 
         document.querySelector("#inicioSesion").style.display = "none";
 
+        history.pushState({ pantalla: "asistencia" }, "", location.href);
+        
         document.querySelector("#sistemaAsistencia").style.display = "block";
 
         document.querySelector(".bienvenida").textContent = empleadoGuardado.nombre;
@@ -807,6 +809,8 @@ if(data.enHoraExtra === true){
 
             document.querySelector("#inicioSesion").style.display = "none";
 
+            history.pushState({ pantalla: "asistencia" }, "", location.href);
+            
             document.querySelector("#sistemaAsistencia").style.display = "block";
 
             document.querySelector(".bienvenida").textContent = data.nombre;
