@@ -958,6 +958,7 @@ function volverAlLogin() {
 
 // Detectar cuando el usuario pulsa la flecha de atrás
 window.addEventListener("popstate", function () {
+    console.log("POPSTATE DETECTADO");
     const sistema = document.querySelector("#sistemaAsistencia");
 
     if (sistema.style.display !== "none") {
