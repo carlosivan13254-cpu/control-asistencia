@@ -1,4 +1,4 @@
-const CACHE_NAME = "asistencia-v5";
+const CACHE_NAME = "asistencia-v6";
 
 const ARCHIVOS = [
     "./",
@@ -15,7 +15,10 @@ self.addEventListener("install", event => {
 
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(ARCHIVOS))
+            .then(cache => cache.addAll(
+                ARCHIVOS.map(archivo => new Request(archivo, { cache: "reload" }))
+            ))
+            .then(() => self.skipWaiting())
     );
 
 });
@@ -27,11 +30,13 @@ self.addEventListener("activate", event => {
 
             return Promise.all(
                 nombres
-                    .filter(nombre => nombre !== CACHE_NAME)
+                    .filter(nombre =>
+                        nombre.startsWith("asistencia-v") && nombre !== CACHE_NAME
+                    )
                     .map(nombre => caches.delete(nombre))
             );
 
-        })
+        }).then(() => self.clients.claim())
     );
 
 });
@@ -39,7 +44,8 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
 
     event.respondWith(
-        caches.match(event.request)
+        caches.open(CACHE_NAME)
+            .then(cache => cache.match(event.request))
             .then(respuesta => {
 
                 return respuesta || fetch(event.request);
@@ -48,4 +54,3 @@ self.addEventListener("fetch", event => {
     );
 
 });
-

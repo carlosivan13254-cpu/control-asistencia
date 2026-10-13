@@ -722,6 +722,8 @@ document.querySelector("#iniciarSesion").addEventListener("click", function(){
 
         document.querySelector("#inicioSesion").style.display = "none";
 
+        registrarEntradaAsistencia();
+
         document.querySelector("#sistemaAsistencia").style.display = "block";
 
         document.querySelector(".bienvenida").textContent = empleadoGuardado.nombre;
@@ -805,6 +807,8 @@ if(data.enHoraExtra === true){
             document.body.classList.add("sistema-activo");
 
             document.querySelector("#inicioSesion").style.display = "none";
+
+            registrarEntradaAsistencia();
 
             document.querySelector("#sistemaAsistencia").style.display = "block";
 
@@ -936,4 +940,50 @@ if(data.registros && data.registros.finExtra !== ""){
 
     });
 
+});
+
+
+function volverAlLogin() {
+    document.querySelector("#sistemaAsistencia").style.display = "none";
+    document.querySelector("#inicioSesion").style.display = "block";
+
+    document.body.classList.remove("sistema-activo");
+    document.body.classList.add("login-activo");
+
+    sessionStorage.removeItem("idEmpleado");
+    document.querySelector("#idEmpleado").value = "";
+    document.querySelector("#confirmacion").style.display = "none";
+}
+
+function registrarEntradaAsistencia() {
+    const estadoActual = history.state;
+    const estado = estadoActual && typeof estadoActual === "object"
+        ? estadoActual
+        : {};
+
+    if (estado.pantalla !== "asistencia") {
+        history.pushState(
+            { ...estado, pantalla: "asistencia" },
+            "",
+            location.href
+        );
+    }
+}
+
+const estadoActual = history.state;
+const estadoInicial = estadoActual && typeof estadoActual === "object"
+    ? estadoActual
+    : {};
+history.replaceState(
+    { ...estadoInicial, pantalla: "login" },
+    "",
+    location.href
+);
+
+window.addEventListener("popstate", function () {
+    const sistema = document.querySelector("#sistemaAsistencia");
+
+    if (sistema && sistema.style.display !== "none") {
+        volverAlLogin();
+    }
 });
