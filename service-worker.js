@@ -1,4 +1,4 @@
-const CACHE_NAME = "asistencia-v6";
+const CACHE_NAME = "asistencia-v7";
 
 const ARCHIVOS = [
     "./",
