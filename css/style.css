@@ -507,26 +507,26 @@ body.sistema-activo {
     }
 
     #entrada {
-        background: #d9f5e5;
-        border-color: #b8e9cd;
+        background: #c8efd8;
+        border-color: #91d7ac;
         color: #176b43;
     }
 
     #comida {
-        background: #dceaff;
-        border-color: #bfd6ff;
+        background: #c7ddff;
+        border-color: #92b8f5;
         color: #1858a8;
     }
 
     #salida {
-        background: #ffe2e2;
-        border-color: #ffcaca;
+        background: #ffd0d0;
+        border-color: #f5a3a3;
         color: #a92727;
     }
 
     #extra {
-        background: #fff0ce;
-        border-color: #ffdfa0;
+        background: #ffe3a3;
+        border-color: #f2c45b;
         color: #8b5b08;
     }
 
@@ -1197,26 +1197,26 @@ body.sistema-activo {
     }
 
     body.sistema-activo #entrada {
-        border-color: #b8e9cd;
-        background: #d9f5e5;
+        border-color: #91d7ac;
+        background: #c8efd8;
         color: #176b43;
     }
 
     body.sistema-activo #comida {
-        border-color: #bfd6ff;
-        background: #dceaff;
+        border-color: #92b8f5;
+        background: #c7ddff;
         color: #1858a8;
     }
 
     body.sistema-activo #salida {
-        border-color: #ffcaca;
-        background: #ffe2e2;
+        border-color: #f5a3a3;
+        background: #ffd0d0;
         color: #a92727;
     }
 
     body.sistema-activo #extra {
-        border-color: #ffdfa0;
-        background: #fff0ce;
+        border-color: #f2c45b;
+        background: #ffe3a3;
         color: #8b5b08;
     }
 
@@ -1651,26 +1651,26 @@ body.sistema-activo {
     }
 
     body.sistema-activo #entrada {
-        background: #d9f5e5;
-        border-color: #b8e9cd;
+        background: #c8efd8;
+        border-color: #91d7ac;
         color: #176b43;
     }
 
     body.sistema-activo #comida {
-        background: #dceaff;
-        border-color: #bfd6ff;
+        background: #c7ddff;
+        border-color: #92b8f5;
         color: #1858a8;
     }
 
     body.sistema-activo #salida {
-        background: #ffe2e2;
-        border-color: #ffcaca;
+        background: #ffd0d0;
+        border-color: #f5a3a3;
         color: #a92727;
     }
 
     body.sistema-activo #extra {
-        background: #fff0ce;
-        border-color: #ffdfa0;
+        background: #ffe3a3;
+        border-color: #f2c45b;
         color: #8b5b08;
     }
 
