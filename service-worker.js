@@ -1,4 +1,3 @@
-
 const CACHE_NAME = "asistencia-v10";
 
 const ARCHIVOS = [
