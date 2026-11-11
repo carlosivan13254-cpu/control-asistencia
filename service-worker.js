@@ -1,4 +1,4 @@
-const CACHE_NAME = "asistencia-v10";
+const CACHE_NAME = "asistencia-v11";
 
 const ARCHIVOS = [
     "./",
@@ -11,22 +11,18 @@ const ARCHIVOS = [
     "./img/perfil.png"
 ];
 
-// INSTALACIÓN
 self.addEventListener("install", event => {
 
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(
-                ARCHIVOS.map(archivo =>
-                    new Request(archivo, { cache: "reload" })
-                )
+                ARCHIVOS.map(archivo => new Request(archivo, { cache: "reload" }))
             ))
             .then(() => self.skipWaiting())
     );
 
 });
 
-// ACTIVACIÓN
 self.addEventListener("activate", event => {
 
     event.waitUntil(
@@ -35,8 +31,7 @@ self.addEventListener("activate", event => {
             return Promise.all(
                 nombres
                     .filter(nombre =>
-                        nombre.startsWith("asistencia-v") &&
-                        nombre !== CACHE_NAME
+                        nombre.startsWith("asistencia-v") && nombre !== CACHE_NAME
                     )
                     .map(nombre => caches.delete(nombre))
             );
@@ -46,58 +41,16 @@ self.addEventListener("activate", event => {
 
 });
 
-// NETWORK FIRST
 self.addEventListener("fetch", event => {
 
-    const solicitud = event.request;
-    const url = new URL(solicitud.url);
-
-    // No intervenir en solicitudes POST
-    if(solicitud.method !== "GET"){
-        return;
-    }
-
-    // No intervenir en solicitudes externas
-    if(url.origin !== self.location.origin){
-        return;
-    }
-
     event.respondWith(
-
-        fetch(solicitud)
-
+        caches.open(CACHE_NAME)
+            .then(cache => cache.match(event.request))
             .then(respuesta => {
 
-                if(respuesta.ok){
-
-                    const copia = respuesta.clone();
-
-                    event.waitUntil(
-                        caches.open(CACHE_NAME)
-                            .then(cache =>
-                                cache.put(solicitud, copia)
-                            )
-                    );
-
-                }
-
-                return respuesta;
+                return respuesta || fetch(event.request);
 
             })
-
-            .catch(() => {
-
-                return caches.open(CACHE_NAME)
-                    .then(cache => cache.match(solicitud))
-                    .then(respuesta => {
-
-                        return respuesta ||
-                            Response.error();
-
-                    });
-
-            })
-
     );
 
 });
